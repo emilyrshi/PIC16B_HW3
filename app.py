@@ -13,26 +13,45 @@ def get_message_db():
       cursor = g.message_db.cursor()
       cursor.execute('''
        CREATE TABLE messages(
-           handle text, 
-           message text, 
+           handle text,
+           message text
        )''')
+      g.message_db.commit()
+      g.message_db.close()
       return g.message_db 
-     
-g.message_db.commit()
-g.message_db.close()
 
 
 def insert_message(request):
-  
-  return
+  handle_input = request.form["handle"]
+  message_input = request.form["message"]
+  cursor.execute("INSERT INTO messages (handle, message) VALUES (%(handle_input)s, %(message_input)s)")
+  g.message_db.commit()
+  g.message_db.close()
+
 
 @app.route("/ask/", methods=['POST', 'GET'])
-def ask():
+def renders():
     if request.method == 'GET':
         # if the user just visits the url
-        return render_template('ask.html')
+        return render_template('submit.html')
     else:
-        # if the user submits the form
-        name = request.form['name']
-        student = request.form['student']
-        return render_template('ask.html', name=name, student=student)
+        insert_message()
+        return render_template('submit.html')
+
+
+def random_messages(n):
+  """
+  Returns a collection of n random messages from the message_db (or fewer if necessary)
+  """
+  SELECT message FROM messages ORDER BY RANDOM() LIMIT n;
+
+  f = open('view.html','w')
+  
+  random_messages = message
+  
+  f.write(random_messages)
+  f.close()
+
+  g.message_db.commit()
+  g.message_db.close()
+
