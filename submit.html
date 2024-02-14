@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 
 {% block header %}
+  <h2>{% block title %}A Simple Message Bank{% endblock %}</h2>
+  <a href="submit.html" target="_blank">Submit a message</a>
+  <a href="view.html" target="_blank">View messages</a>
+{% endblock %}
+
+{% block header %}
   <h2>{% block title %}Submit{% endblock %}</h2>
 {% endblock %}
 
