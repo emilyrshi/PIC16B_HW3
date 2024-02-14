@@ -54,7 +54,7 @@ def random_messages(n):
   return random_messages
 
 
-@app.route("/ask/", methods=['POST', 'GET'])
+# @app.route("/ask/", methods=['POST', 'GET'])
 def renders():
     if request.method == 'GET':
         # if the user just visits the url
