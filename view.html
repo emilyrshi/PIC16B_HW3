@@ -1,1 +1,15 @@
+# same heading
+
+{% block header %}
+  <h2>{% block title %}A Simple Message Bank{% endblock %}</h2>
+  <a href="submit.html" target="_blank">Submit a message</a><br>
+  <a href="view.html" target="_blank">View messages</a><br>
+{% endblock %}
+
 # display the messages extracted from random_messages()
+
+{% block header %}
+  <h2>{% block title %}Some Cool Messages{% endblock %}</h2>
+  <h2>{{random_messages}}</h2>
+{% endblock %}
+
