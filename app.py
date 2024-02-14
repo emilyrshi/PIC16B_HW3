@@ -44,7 +44,8 @@ def random_messages(n):
   """
   g.message_db = sqlite3.connect("messages_db.sqlite")      
   cursor = g.message_db.cursor()
-  cursor.execute("SELECT handle, messages FROM messages ORDER BY RANDOM() LIMIT n")
+  # cursor.execute("SELECT handle, messages FROM messages ORDER BY RANDOM() LIMIT n")
+  cursor.execute("SELECT handle, messages FROM messages")
   random_messages = cursor.fetchall()
 
   g.message_db.commit()
