@@ -2,8 +2,8 @@
 
 {% block header %}
   <h2>{% block title %}A Simple Message Bank{% endblock %}</h2>
-  <a href="submit.html" target="_blank">Submit a message</a>
-  <a href="view.html" target="_blank">View messages</a>
+  <a href="submit.html" target="_blank">Submit a message</a><br>
+  <a href="view.html" target="_blank">View messages</a><br>
 {% endblock %}
 
 {% block header %}
@@ -18,20 +18,3 @@
       <input type="text" name="handle" id="handle"><br>
       <input type="submit" value="Submit message"><br>
   </form>
-
-  {% if thanks %}
-    Thanks for submitting a file!
-  {% endif %}
-
-  {% if digit %}
-    <br>
-    Thanks for the image!  It looks like a {{digit}}.
-    <br>
-    <img src="{{ image }}", alt="an 8x8 visualization of the supplied digit."/>
-  {% endif %}
-
-  {% if error %}
-    <br>
-    Oh no, we couldn't use that file!  Please upload an 8x8 numpy array as a text file.
-  {% endif %}
-{% endblock %}
