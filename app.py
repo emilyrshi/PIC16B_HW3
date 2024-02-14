@@ -16,8 +16,6 @@ def get_message_db():
            handle text,
            message text
        )''')
-      g.message_db.commit()
-      g.message_db.close()
       return g.message_db 
 
 
@@ -27,14 +25,15 @@ def insert_message(request):
   cursor.execute("INSERT INTO messages (handle, message) VALUES (%(handle_input)s, %(message_input)s)")
   g.message_db.commit()
   g.message_db.close()
+  
 
-
-@app.route("/ask/", methods=['POST', 'GET'])
-def renders():
+@app.route("/submit/", methods=['POST', 'GET'])
+def submit():
     if request.method == 'GET':
         # if the user just visits the url
         return render_template('submit.html')
     else:
+        # if the user submits the form
         insert_message()
         return render_template('submit.html')
 
@@ -43,15 +42,21 @@ def random_messages(n):
   """
   Returns a collection of n random messages from the message_db (or fewer if necessary)
   """
-  SELECT message FROM messages ORDER BY RANDOM() LIMIT n;
-
-  f = open('view.html','w')
-  
-  random_messages = message
-  
-  f.write(random_messages)
-  f.close()
+  g.message_db = sqlite3.connect("messages_db.sqlite")      
+  cursor = g.message_db.cursor()
+  cursor.execute("SELECT handle, messages FROM messages ORDER BY RANDOM() LIMIT n")
+  random_messages = cursor.fetchall()
 
   g.message_db.commit()
   g.message_db.close()
+
+  return random_messages
+
+
+@app.route("/ask/", methods=['POST', 'GET'])
+def renders():
+    if request.method == 'GET':
+        # if the user just visits the url
+        randMess = random_messages(5)
+        return render_template('view.html', random_messages = randMess)
 
