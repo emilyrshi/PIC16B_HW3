@@ -2,6 +2,22 @@ import sqlite3
 from flask import Flask, render_template, request
 from flask import redirect, url_for, abort
 
+from flask import Flask, g, render_template, request
+
+import sklearn as sk
+import matplotlib.pyplot as plt
+import numpy as np
+import pickle
+import os
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.figure import Figure
+
+import io
+import base64
+
+### stuff from last class
+app = Flask(__name__)
+
 def get_message_db():
   # write some helpful comments here
   try:
@@ -27,7 +43,7 @@ def insert_message(request):
   g.message_db.close()
   
 
-# @app.route("/submit/", methods=['POST', 'GET'])
+@app.route("/submit/", methods=['POST', 'GET'])
 def submit():
     if request.method == 'GET':
         # if the user just visits the url
@@ -54,10 +70,12 @@ def random_messages(n):
   return random_messages
 
 
-# @app.route("/ask/", methods=['POST', 'GET'])
+@app.route("/ask/", methods=['POST', 'GET'])
 def renders():
     if request.method == 'GET':
         # if the user just visits the url
         randMess = random_messages(5)
         return render_template('view.html', random_messages = randMess)
 
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
