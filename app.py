@@ -23,7 +23,7 @@ g.message_db.close()
 
 
 def insert_message(request):
-  <input type="text" name="message" id="message">
+  
   return
 
 @app.route("/ask/", methods=['POST', 'GET'])
