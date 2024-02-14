@@ -27,7 +27,7 @@ def insert_message(request):
   g.message_db.close()
   
 
-@app.route("/submit/", methods=['POST', 'GET'])
+# @app.route("/submit/", methods=['POST', 'GET'])
 def submit():
     if request.method == 'GET':
         # if the user just visits the url
