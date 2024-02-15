@@ -18,3 +18,8 @@
       <input type="text" name="handle" id="handle"><br>
       <input type="submit" value="Submit message"><br>
   </form>
+  {% if name %}
+  <b>Your Handle: {{handle}}</b>
+  <b>Your Message: {{message}}</b>
+  {% endif %}
+{% endblock %}
