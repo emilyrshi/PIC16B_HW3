@@ -1,98 +1,95 @@
-from flask import Flask, render_template, request
-import sqlite3 as sql
-app = Flask(__name__)
-
 from flask import Flask, g, render_template, request
-
-import sklearn as sk
-import matplotlib.pyplot as plt
-import numpy as np
-import pickle
+import sqlite3
 import os
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-from matplotlib.figure import Figure
-
-import io
-import base64
 
 app = Flask(__name__)
 
-@app.route("/create_db/") # decorators
+@app.route('/')
+def main():
+    return render_template('base.html')
+
 def get_message_db():
-  # write some helpful comments here
-  try:
-      # check whether a table called messages exists in message_db
-      cursor.execute("SELECT * FROM messages")
-      return g.message_db
-  except:
-      g.message_db = sqlite3.connect("messages_db.sqlite")      
-      cursor = g.message_db.cursor()
-      cursor.execute('''
-       CREATE TABLE messages(
-           handle text,
-           message text
-       )''')
-      return g.message_db 
-
-@app.route("/insert/") # decorators
+# write some helpful comments here
+    try:
+        return g.message_db
+    except AttributeError:
+        g.message_db = sqlite3.connect("message_db.sqlite")
+        cursor = g.message_db.cursor()
+        cursor.execute('''CREATE TABLE IF NOT EXISTS messages (
+                              handle TEXT,
+                              message TEXT)''')
+        g.message_db.commit()
+        return g.message_db
+    
 def insert_message(request):
-  handle_input = request.form["handle"]
-  message_input = request.form["message"]
-  cursor.execute("INSERT INTO messages (handle, message) VALUES (%(handle_input)s, %(message_input)s)")
-  g.message_db.commit()
-  g.message_db.close()
-  
-
-@app.route("/submit/", methods=['POST', 'GET'])
-def submit():
-    if request.method == 'GET':
-        # if the user just visits the url
-        return render_template('submit.html')
-    else:
-        # if the user submits the form
-        insert_message()
-        return render_template('submit.html')
-      #   try:
-      #     insert_message()
-      #    with sql.connect("messages_db.sqlite") as con:
-      #       cur = con.cursor()
-            
-      #       # ADD CODE HERE
-      #       cur.execute("CODE HERE")
-            
-      #       con.commit()
-      #       msg = "Record successfully added"
-      # except:
-      #    con.rollback()
-      #    msg = "error in insert operation"
-      
-      # finally:
-      #    return render_template("result.html",msg = msg)
-      #    con.close()
-
-@app.route("/rand_mes/") # decorators
+    message = request.form['message']
+    handle = request.form['handle']
+    
+    # Get the database connection
+    db = get_message_db()
+    
+    # SQL query to insert the message into the 'messages' table
+    insert_query = "INSERT INTO messages (handle, message) VALUES (?, ?)"
+    
+    cursor = db.cursor()
+    
+    # Execute the SQL query with the handle and message as parameters
+    cursor.execute(insert_query, (handle, message))
+    
+    # Commit the changes to the database
+    db.commit()
+    db.close()
+    
 def random_messages(n):
-  """
-  Returns a collection of n random messages from the message_db (or fewer if necessary)
-  """
-  g.message_db = sqlite3.connect("messages_db.sqlite")      
-  cursor = g.message_db.cursor()
-  # cursor.execute("SELECT handle, messages FROM messages ORDER BY RANDOM() LIMIT n")
-  cursor.execute("SELECT handle, messages FROM messages")
-  random_messages = cursor.fetchall()
+    
+    # Get the database connection
+    db = get_message_db()
+    
+    # Create a cursor object to execute SQL commands
+    cursor = db.cursor()    
+    
+    # SQL query to insert the message into the 'messages' table
+    cursor.execute('''SELECT handle, message FROM messages ORDER BY RANDOM() LIMIT ?''', (n,))
+    messages = cursor.fetchall()
+   
+    # Commit the changes to the database
+    db.commit()
+    db.close()
+    
+    return messages
+    
+@app.route('/submit', methods=['GET', 'POST'])
+def submit():
+    if request.method == 'POST':
+        insert_message(request)
+        # Add a small note thanking the user for their submission
+        submission_note = "Thank you for your submission!"
+        return render_template('submit.html', submission_note=submission_note)
+    else:
+        return render_template('submit.html')
+    
+@app.route('/view')
+def view():
+    rand_mess = random_messages(5)
+    return render_template('view.html', rand_mess = rand_mess)
 
-  g.message_db.commit()
-  g.message_db.close()
-
-  return random_messages
+if __name__ == '__main__':
+    app.run(debug=True)
 
 
-@app.route("/ask/", methods=['POST', 'GET'])
-def renders():
-    if request.method == 'GET':
-        # if the user just visits the url
-        randMess = random_messages(5)
-        return render_template('view.html', random_messages = randMess)
 
-if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
