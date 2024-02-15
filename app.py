@@ -1,6 +1,6 @@
-import sqlite3
 from flask import Flask, render_template, request
-from flask import redirect, url_for, abort
+import sqlite3 as sql
+app = Flask(__name__)
 
 from flask import Flask, g, render_template, request
 
@@ -15,9 +15,9 @@ from matplotlib.figure import Figure
 import io
 import base64
 
-### stuff from last class
 app = Flask(__name__)
 
+@app.route("/create_db/") # decorators
 def get_message_db():
   # write some helpful comments here
   try:
@@ -34,7 +34,7 @@ def get_message_db():
        )''')
       return g.message_db 
 
-
+@app.route("/insert/") # decorators
 def insert_message(request):
   handle_input = request.form["handle"]
   message_input = request.form["message"]
@@ -52,8 +52,25 @@ def submit():
         # if the user submits the form
         insert_message()
         return render_template('submit.html')
+      #   try:
+      #     insert_message()
+      #    with sql.connect("messages_db.sqlite") as con:
+      #       cur = con.cursor()
+            
+      #       # ADD CODE HERE
+      #       cur.execute("CODE HERE")
+            
+      #       con.commit()
+      #       msg = "Record successfully added"
+      # except:
+      #    con.rollback()
+      #    msg = "error in insert operation"
+      
+      # finally:
+      #    return render_template("result.html",msg = msg)
+      #    con.close()
 
-
+@app.route("/rand_mes/") # decorators
 def random_messages(n):
   """
   Returns a collection of n random messages from the message_db (or fewer if necessary)
