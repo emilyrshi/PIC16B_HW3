@@ -1,1 +1,15 @@
-
+body {
+    font-family: "Lucida Console", "Courier New", monospace;
+    background-color: #CD5C5C;
+}
+h1 {
+    color: #FFFFF0;
+}
+ul {
+    list-style-type: none;
+}
+li {
+    background-color: #FFFFF0;
+    padding: 10px;
+    margin-bottom: 5px;
+}
