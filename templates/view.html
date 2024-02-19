@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
-{% block title %}View Messages{% endblock %}
+{% block title %}
+View Messages
+{% endblock %}
 
 {% block content %}
 <h1>Some Cool Messages</h1>
 <ul>
-    
-{% for message in messages %}
-    <li>{{ message[0] }}: {{ message[1] }}</li>
+{% for message in rand_mess %}
+    <li>{{ message[1] }}<br> - {{ message[0] }}<br></li>
 {% endfor %}
-    
 </ul>
 {% endblock %}
